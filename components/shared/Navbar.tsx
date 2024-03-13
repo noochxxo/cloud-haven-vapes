@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react"
 import Image from "next/image";
 import Link from "next/link";
+import { disablePageScroll, enablePageScroll } from "scroll-lock";
 
 import {
   NavigationMenu,
@@ -17,8 +19,31 @@ import {
 
 import Logo from "@/public/assets/logo.png";
 import { navLinks } from "@/constants";
+import { ModeToggle } from "./ModeToggle";
+import HamburgerMenu from "./HamburgerMenu";
+import MenuSvg from "./MenuSvg"
+import { Button } from "../ui/button";
 
 const Navbar = () => {
+
+  const [openNavigation, setOpenNavigation] = useState(false)
+
+  const toggleNavigation = () => {
+    if (openNavigation) {
+      setOpenNavigation(false)
+      enablePageScroll()
+    } else {
+      setOpenNavigation(true)
+      disablePageScroll()
+    }
+  }
+
+  const handleClick = () => {
+    if (!openNavigation) return
+    enablePageScroll()
+    setOpenNavigation(false)
+  }
+
   return (
     <div className={`
       fixed
@@ -31,13 +56,17 @@ const Navbar = () => {
       <div className="
         flex
         items-center
+        pb-2
+        pt-7
         px-5
-        lg:px-7
+        
+        lg:px-2
         xl:px-10
         max-lg:py-4
       ">
+        <ModeToggle />
         <a href="#hero"
-          className="block w-[12rem] xl:mr-8"
+          className="ml-4 block w-[12rem] xl:mr-8"
         >
           {/* <Image
           src={Logo}
@@ -48,6 +77,8 @@ const Navbar = () => {
         Cloud Haven Vapes
         </a>
         <NavigationMenu className={`
+          ${openNavigation ? "flex": "hidden"}
+          justify-self-center
           fixed
           top-[5rem]
           left-0
@@ -57,20 +88,54 @@ const Navbar = () => {
           lg:flex
           lg:mx-auto
         `}>
-          <NavigationMenuList>
+          <NavigationMenuList
+            className={`
+              relative
+              z-2
+              flex
+              flex-col
+              items-center
+              justify-center
+              m-auto
+              lg:flex-row
+              ${openNavigation ? "w-screen": ""}
+            `}
+          >
               {navLinks.map((link) => (
-              <NavigationMenuItem>
-                <Link href={link.route}>
-                  <NavigationMenuLink
-                    className={`${navigationMenuTriggerStyle()} uppercase`}
-                  >
+              <NavigationMenuItem key={link.route}
+                className={`uppercase
+                    block
+                    relative
+                    text-2xl
+                    py-6
+                    md:py-8
+                    lg:-mr-0.25
+                    lg:text-xs
+                    lg:font-semibold
+                  `}
+              >
+                <Link href={link.route} legacyBehavior  passHref>
+                  <NavigationMenuLink 
+                    className={`
+                    
+                    ${navigationMenuTriggerStyle()}
+                  `} 
+                  > 
                     {link.label}
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
             ))}
+            
           </NavigationMenuList>
+          <HamburgerMenu />
         </NavigationMenu>
+        <Button
+          className="ml-auto lg:hidden"
+          onClick={toggleNavigation}
+        >
+          <MenuSvg openNavigation={openNavigation} />
+        </Button>
       </div>
     </div>
   );
