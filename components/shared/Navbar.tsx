@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { disablePageScroll, enablePageScroll } from "scroll-lock";
+import { disablePageScroll, enablePageScroll } from "scroll-lock"
 
 import {
   NavigationMenu,
@@ -64,7 +64,6 @@ const Navbar = () => {
         pt-7
         px-5
         
-        lg:px-2
         xl:px-10
         max-lg:py-4
       "
